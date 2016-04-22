@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charsrt="utf-8"/>
+</head>
+<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+ 
+  <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <style type="text/css">
+  *{margin: 0;
+  padding: 0}
+div#tags>div {
+    width: 229px;
+    padding: 10px 20px 0 20px;
+    display: inline-block;
+    height: 400px;
+    /*border: 1px solid red;*/
+    margin: 0;
+    /* padding: 0; */
+    overflow: hidden;
+}
+div#tags>div ul {
+    width: 100%;
+}
+div#tags>div p {
+    font-weight: 700;
+}
+div#tags>div li {
+    list-style-type: none;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    overflow: hidden;
+}
+.bottom {
+    margin: 20px 0;
+}
+i.angle.icon {
+    font-size: 22px;
+    color: #aaa;
+    cursor: pointer;
+}
+i.icon:hover {
+    color: #6F6C6C;
+}
+</style>
+<body>
+<div id="tags">
+  <div class="huayu" data-language="1"><p>华语热歌</p><ul></ul><div class="bottom"></div>
+</div>
+<div class="hanyu" data-language="2"><p>日韩热歌</p><ul></ul><div class="bottom"></div>
+</div>
+<div class="oumei" data-language="3"><p>欧美热歌</p><ul></ul><div class="bottom"></div>
+</div>
+</body>
+<script type="text/javascript">
+ $(document).ready(function() { 
+  getformusic($("#tags .huayu ul"),"华语",1);
+  getformusic($("#tags .hanyu ul"),"日韩",1);
+  getformusic($("#tags .oumei ul"),"欧美",1);
+
+  function getformusic(elem,language,page){
+    
+         $.ajax({
+                  type: "post",
+                  url: "/getformusictime",
+                  data: {
+                  tag: language,
+                  page:page
+                  },
+                 async:false,//同步
+                 dataType: "json",
+                  success: function(msg) {
+                    elem.html("");
+                  msg.docs.forEach(function(item,index){
+                    elem.append("<li><a href='javascript:' title='"+item.songname+"' class='ellipsis mname'  data-name='"+item.filename+"'>"+item.songname+"</a><a href='javascript:' title='"+item.singername+"' class='ellipsis msinger'>-"+item.singername+"</a> </li>");
+                  });  
+                   
+                  elem.next().html("");
+                  if(!msg.isFirstPage)
+                  {elem.next().html("<i class='angle left icon' style='float:left' data-page='"+page+"'></i>")}
+                       
+                  
+                  if(!msg.isLastPage){
+                    elem.next().html(elem.next().html()+"<i class='angle right icon' style='float:right' data-page='"+page+"'></i>")
+                  }
+                 },
+                  error: function(err) {
+                      console.log(err);
+                  }
+
+                });
+      }        
+  
+ $("#tags div").click(function(e){
+    if($(e.target).hasClass("right")){
+
+     getformusic($(this).children('ul'),$(this).attr("data-language"),parseInt($(e.target).attr("data-page"))+1);
+    }else if($(e.target).hasClass("left")){
+
+     getformusic($(this).children('ul'),$(this).attr("data-language"),parseInt($(e.target).attr("data-page"))-1);
+    }
+ })
+})
+</script>
+</html>

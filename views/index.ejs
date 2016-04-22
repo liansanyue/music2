@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Music</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/semantic/dist/semantic.min.js"></script>
+    <script type="text/javascript">
+    var playlist = [];
+    var playlisthtml = [];
+    var count = 0;
+    function undoa(){
+              
+               $("#main_content iframe").css("display","none"); 
+                       $("#main_content div.info").css("display","block");
+             }
+    </script>
+</head>
+
+<body>
+    <div class="ui menu">
+        <div class="header item">Music</div>
+        <a class="active item" href="/music" target="iframe">好歌推荐</a>
+        <a class=" item" href="/hotlist" target="iframe">热度榜</a>
+        <a class="item" href="/newlist" target="iframe">新歌榜</a>
+        <a class="item" href="/tags" target="iframe">标签</a>
+        <div class="right menu">
+            <div class="item">
+                <div class="ui action left icon input">
+                    <i class="search icon"></i>
+                    <input type="text" placeholder="Search">
+                    <button class="ui button">Submit</button>
+                </div>
+            </div>
+            <% if(!name){ %>
+                <a class="item" href="/login">
+        Sign In</a>
+                <a class="item" href="/reg">Sign Up</a>
+                <% }else{ %>
+                    <a class="item" href="/logout">
+      Logout</a>
+                    <a class="item" id="user" href="#">
+                        <%=name %>
+                    </a>
+                    <% } %>
+        </div>
+    </div>
+    <div id="main">
+        <div id="main_content">
+            <iframe src="/music" name="iframe"></iframe>
+            <div class="info">
+                <p></p>
+                <ul></ul>
+            </div>
+        </div>
+        <div id="music_play">
+        </div>
+        <div id="music_list">
+            <div class="ui top attached tabular menu">
+                <a class="active item" data-tab="first">播放列表</a>
+                <a class="item love" data-tab="second">我的收藏</a>
+                <a class="item" data-tab="third">歌词</a>
+            </div>
+            <div class="playlist" data-tab="first" style="display:block;">
+                <ul></ul>
+                <div class="delall">全部删除<i class='trash outline icon'></i></div>
+            </div>
+            <div id="loves" class="collection" data-tab="second" style="display:none;">
+                <h4>将该列表歌曲添加到播放列表？<i class="add circle icon"></i></h4>
+                <ul>
+                    <% loves.forEach(function(music,index){ %>
+                        <li>
+                            <a href="javascript:" title="<%=music.songname %>" class="ellipsis mname" data-name="<%=music.filename %>">
+                                <%=music.songname %>
+                            </a>
+                            <a href="#" title="<%=music.singername %>" class="ellipsis msinger">-<%=music.singername %></a><i class='trash outline icon'></i>
+                            <% }) %>
+                        </li>
+                </ul>
+            </div>
+            <div id="lrc" class="collection" data-tab="third" style="display:none;">
+                <div></div>
+            </div>
+            <div class="play">
+                <i class="step backward icon"></i><i class="heart icon "></i><i class="step forward icon"></i><i class="download icon"></i>
+                <audio src="" controls preload="none">
+            </div>
+        </div>
+</body>
+<script type="text/javascript" src="javascripts/main.js"></script>
+</html>
