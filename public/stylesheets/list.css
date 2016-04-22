@@ -1,0 +1,58 @@
+ *{margin: 0;
+  padding: 0}
+div#tags>div {
+    width: 229px;
+    padding: 10px 0px 0px 20px;
+    display: inline-block;
+    height: 400px;
+    /*border: 1px solid red;*/
+    margin: 0;
+    /* padding: 0; */
+    overflow: hidden;
+}
+div#tags>div ul {
+    width: 100%;
+}
+div#tags>div p {
+    font-weight: 700;
+}
+div#tags>div li {
+    list-style-type: none;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    overflow: hidden;
+}
+.bottom {
+    margin: 20px 0;
+}
+i.angle.icon {
+    font-size: 22px;
+    color: #aaa;
+    cursor: pointer;
+}
+i.icon:hover {
+    color: #6F6C6C;
+}
+.mname {
+    min-width: 70px;
+    max-width: 135px;
+}
+.msinger{
+    min-width: 70px;
+    max-width: 70px;
+     color: #ccc;
+}
+.ellipsis {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+i.video.play.outline.icon {
+    font-size: 17px;
+    margin: 0 10px;
+    color: #aaa;
+    cursor: pointer;
+}

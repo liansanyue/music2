@@ -295,7 +295,7 @@ Music.search=function(keyword,callback){
             collection.find({"info":pattern},{
                 "songname":1,
                 "singername":1,
-                "songname":1,
+                "filename":1,
                 "tag":1
             }).sort({pv:-1}).toArray(function (err,docs) {
                 mongodb.close();

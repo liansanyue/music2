@@ -98,7 +98,7 @@
           line-height: 24px;
           margin: 5px;
       }
-      .play i:nth-of-type(4),.play i:nth-of-type(3){
+     .play a ,.play i:nth-of-type(3),.play i:nth-of-type(4){
         
           float: right;
       }
@@ -113,9 +113,7 @@
         height: 375px;
         overflow: auto;
       }
-      .msinger{
-        color: #ccc;
-      }
+      
       i{
         cursor: pointer;
       }
@@ -127,6 +125,13 @@
       .msinger{
           min-width: 70px;
           max-width: 100px;
+           color: #ccc;
+      }
+       .ellipsis {
+          display: inline-block;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
       }
       i.trash.outline.icon {
           float: right;
@@ -136,12 +141,7 @@
           float: left;
           margin-right: 5px;
       }
-      .ellipsis {
-          display: inline-block;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-      }
+     
       #music_list h4 {
           padding: 10px 0px 0px 20px;
       }

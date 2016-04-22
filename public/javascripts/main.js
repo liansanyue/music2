@@ -42,14 +42,14 @@
                      playlist.splice(index,1);
                       $(e.target).parent().remove(); 
                       $(this).children().each(function(index){
-                        console.log(index);
+                      
                         $(this).attr("data-index",index);
                       })
                     if(index==count){
                       
                       musicnum(count);
                     }
-                    console.log(playlist);
+                   
                     
                     
                 }
@@ -85,9 +85,13 @@
                 $("audio").attr("src","/music/"+playlist[num]+".mp3"); 
                   $("audio")[0].play(); 
                   var filename=playlist[num];
-                  console.log(filename);
+                   var songname=$(".playlist li:eq("+num+") a").first().attr("title");
+                  
                   if(filename==undefined||playlist.length==0){return ;}
-                  else{
+                  else{ 
+                     if($("#user").text()!=""){
+                    $("#download").attr("href","/music/"+playlist[num]+".mp3");
+                    $("#download").attr("download",songname+".mp3");}
                         $.ajax({
                               type: "post",
                               url: "/getlrc",
@@ -150,7 +154,7 @@
 
                       var songname=tar.attr("title");
                       var filename=tar.attr("data-name");
-                      var singername=tar.next().attr("title"); console.log(songname);console.log(singername);console.log(filename);
+                      var singername=tar.next().attr("title"); 
                       var user=$("#user").text();
                      
                         if(user.trim()=="")
@@ -171,7 +175,7 @@
                               },
                               dataType: "json",
                               success: function(msg) {
-                                console.log(msg);
+                               
                                 relist(msg)
 
                               },
@@ -196,7 +200,7 @@
                       var songname=tar.attr("title");
                       var filename=tar.attr("data-name");
                       var singername=tar.next().attr("title");  
-                      var user=$("#user").text();        console.log(songname);console.log(singername);console.log(filename);
+                      var user=$("#user").text();        
                        $.ajax({
                               type: "post",
                               url: "/dellove",
@@ -292,12 +296,12 @@
                 },
                 dataType: "json",
                 success: function(msg) {
-                  console.log(msg);
+                  
                    $("#main_content iframe").css("display","none"); 
                    $("#main_content div.info").css("display","block");
                    $("#main_content div.info>p").html("");
                      $("#main_content div.info>ul").html("");
-                     $("#main_content div.info>p").html("<i class='undo icon'  onclick='undoa()'></i><br/><i class='quote left icon'></i><span>"+keyword+"</span><i class='quote right icon'></i> 的搜索结果")
+                     $("#main_content div.info>p").html("<i class='undo icon' ></i><br/><i class='quote left icon'></i><span>"+keyword+"</span><i class='quote right icon'></i> 的搜索结果")
                     msg.forEach(function(item,index){
                     $("#main_content div.info ul").append("<li><a href='javascript:' title='"+item.songname+"' class='ellipsis mname'  data-name='"+item.filename+"'>"+item.songname+"</a><a href='javascript:' title='"+item.singername+"' class='ellipsis msinger'>-"+item.singername+"</a> </li>");
                   }); 
@@ -309,14 +313,52 @@
               })
             }
           });
+          $("#input_search").keydown(function(e){
+            if (e.keyCode === 13) {
+                      var keyword=$(this).val().trim();
+                      if(keyword!=""){
+                        $.ajax({
+                          type: "post",
+                          url: "/search",
+                          data: {
+                          keyword:keyword                 
+                          },
+                          dataType: "json",
+                          success: function(msg) {
+                            
+                             $("#main_content iframe").css("display","none"); 
+                             $("#main_content div.info").css("display","block");
+                             $("#main_content div.info>p").html("");
+                               $("#main_content div.info>ul").html("");
+                               $("#main_content div.info>p").html("<i class='undo icon' ></i><br/><i class='quote left icon'></i><span>"+keyword+"</span><i class='quote right icon'></i> 的搜索结果")
+                              msg.forEach(function(item,index){
+                              $("#main_content div.info ul").append("<li><a href='javascript:' title='"+item.songname+"' class='ellipsis mname'  data-name='"+item.filename+"'>"+item.songname+"</a><a href='javascript:' title='"+item.singername+"' class='ellipsis msinger'>-"+item.singername+"</a> </li>");
+                            }); 
+                          },
+                          error: function() {
+                              alert("error");
+                          }
+
+                        })
+                      }
+                }
+              }) 
+            
          //点击返回
             $(".info").click(function(e){
               if($(e.target).hasClass("undo")){
-                  
+
                  $("#main_content iframe").css("display","block"); 
                  $("#main_content div.info").css("display","none");
-              }
-            })
+              }else if($(e.target).hasClass("mname")){
+                 
+                playlist.push($(e.target).attr("data-name"));
+            
+                $(".playlist ul").append("<li data-index="+(playlist.length-1)+">"+$(e.target).parent().html()+"<i class='trash outline icon'></i></li> ")
+                $(".playlist ul").scrollTop($(".playlist ul").scrollTop()+30);
+                count=playlist.length-1;
+                musicnum(count);}
+            })  
 
 
          }) 

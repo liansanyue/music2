@@ -5,39 +5,31 @@ var Love = require("../models/love.js");
 var Music = require("../models/music.js");
 module.exports = function(app) {
     app.get('/', function(req, res) {
+        var loves;
         User.get(req.session.username, function(err, user) {
             if (!user) {
-                req.flash('error', '用户不存在');
-                return res.redirect('/login')
+                loves=[]
             }
-
+             else{
+               loves=user.loves; 
+             }
             res.render("index", {
                 user: req.session.user,
-                loves: user.loves,
+                loves: loves,
                 name: req.session.username,
                 success: req.flash('success').toString(),
                 error: req.flash('error').toString()
             });
         })
-    })
-    app.get("/logout", function(req, res) {
-        req.session.user = null;
-        req.session.username = null;
-        req.flash('success', '注销成功');
-        res.redirect('test');
     });
-
-    app.get('/upload', function(req, res) {
-
-        res.render('upload');
-
-    });
+    app.get('/login',checkNotLogin);
     app.get('/login', function(req, res) {
 
         res.render('login');
 
     });
-    app.post('/login', function(req, res) {
+     app.post('/login',checkNotLogin);
+     app.post('/login', function(req, res) {
         //生成密码MD5的值
         var md5 = crypto.createHash('md5'),
             password = md5.update(req.body.password).digest('hex');
@@ -60,18 +52,24 @@ module.exports = function(app) {
             req.session.user = user;
             req.flash('success', '登陆成功');
             console.log("登录成功");
-            res.redirect('/test');
+            res.redirect('/');
         })
 
     });
+    app.get('/logout',checkLogin);
+    app.get("/logout", function(req, res) {
+        req.session.user = null;
+        req.session.username = null;
+        req.flash('success', '注销成功');
+        res.redirect('/');
+    });
+    app.get('/reg',checkNotLogin);
     app.get('/reg', function(req, res) {
 
         res.render('reg');
 
     });
-    app.get("/search",function(req,res){
-        res.render("search")
-    })
+    app.post('/reg',checkNotLogin);
     app.post('/reg', function(req, res) {
         var name = req.body.name.trim() == "" ? req.body.email : req.body.name.trim();
         password = req.body.password,
@@ -98,7 +96,7 @@ module.exports = function(app) {
                 req.flash('error', err);
                 return res.redirect('/')
             }
-            console.log(user.length);
+            
             if (user.length > 19) {
 
                 req.flash('error', '你已经注册过20个用户啦')
@@ -125,12 +123,19 @@ module.exports = function(app) {
                     req.session.username = newUser.name;
                     req.session.user = user;
                     req.flash('success', '注册成功');
-                    res.redirect('/test');
+                    res.redirect('/');
 
                 });
             });
         })
     });
+    app.get('/upload',checkLogin);
+    app.get('/upload', function(req, res) {
+
+        res.render('upload');
+
+    });
+    app.post('/upload',checkLogin);
     app.post('/upload', function(req, res) {
         var str = req.files.music.name;
 
@@ -149,9 +154,15 @@ module.exports = function(app) {
             }
             console.log('success!')
                 // req.flash('success', '发布成功');
-            res.redirect('upload');
+            res.redirect('/upload');
         })
     });
+   
+    app.get("/search",function(req,res){
+        res.render("search")
+    })
+    
+    
     app.get('/music', function(req, res) {
         // var getmusics=[];
         Music.getTenNew(null, 1, function(err, musicsnew, total) {
@@ -197,9 +208,6 @@ module.exports = function(app) {
         });
     });
     app.get('/hotlist', function(req, res) {
-
-
-
         res.render("hotlist", {
 
             user: req.session.user,
@@ -210,8 +218,6 @@ module.exports = function(app) {
         });
     });
     app.get('/tags', function(req, res) {
-
-        
         Music.getTags(function(err, tags ) {
             if (err) {
                 tags= [];
@@ -222,6 +228,7 @@ module.exports = function(app) {
         })
         })
     });
+    app.post('/addlove',checkLogin);
     app.post("/addlove", function(req, res) {
 
         var date = new Date(),
@@ -250,6 +257,7 @@ module.exports = function(app) {
 
         })
     });
+    app.post('/dellove',checkLogin);
     app.post("/dellove", function(req, res) {
         Love.remove(req.body.user, req.body.songname, req.body.singername, req.body.filename, function(err, docs) {
             if (err) {
@@ -270,23 +278,34 @@ module.exports = function(app) {
         })
     })
     app.post("/getlrc", function(req, res) {
-        fs.readFile('./public/music/' + req.body.filename + ".lrc", 'utf8', function(err, data) {
-            //读取文件
-            if (err) {
-                res.send(false)
+          fs.stat('./public/music/' + req.body.filename + ".lrc", function (err, stats) {
+               if (err) {
+                res.send("");
                 return;
             }
-            Music.browse(req.body.filename, function(s) {
-                    if (s) return;
-                    else {
-                        res.send(data);
+              if (stats.isFile()) {
+                   fs.readFile('./public/music/' + req.body.filename + ".lrc", 'utf8', function(err, data) {
+                    //读取文件
+                    if (err) {
+                        res.send("");
+                        return;
                     }
-                })
-                //将文件内容显示
+                    Music.browse(req.body.filename, function(s) {
+                            if (s) return;
+                            else {
+                                res.send(data);
+                            }
+                        })
+                        //将文件内容显示
 
 
-        });
-    })
+                }); 
+              }else  {
+               res.send("");
+                return;
+              } });
+     
+    });
 
     app.post("/getformusicpv", function(req, res) {
         Music.getformusicpv(req.body.tag, req.body.page, function(err, docs, total) {
@@ -301,7 +320,7 @@ module.exports = function(app) {
 
 
             }
-            console.log(total);
+            
             res.send(msg);
         })
     })
@@ -323,12 +342,30 @@ module.exports = function(app) {
         })
     })
      app.post("/search",function(req, res){
-        Music.search(req.body.keyword,function(err,docs){
+           Music.search(req.body.keyword,function(err,docs){
             if(err){
                 docs=[];
             }else{
                 res.send(docs);
-            }
-        })
+            }        })
     });
+
+    app.use(function(req,res){      
+      
+       res.render("404")
+    ;})
 };
+function checkLogin(req,res,next){
+  if(!req.session.user){
+    req.flash('error','未登录!');
+    res.redirect('/login');
+  }
+  next();
+}
+function checkNotLogin(req,res,next){
+  if(req.session.user){
+    req.flash('error','已登录!');
+    res.redirect('/');
+  }
+  next();
+}

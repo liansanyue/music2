@@ -22,13 +22,22 @@
    	line-height: 30px;
     height: 30px;
    }
+   i.video.play.outline.icon {
+    font-size: 17px;
+    margin: 0 10px;
+    color: #aaa;
+    cursor: pointer;
+}
+.msinger{
+   
+     color: #ccc;
+}
 	</style>
 	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
  
-  <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-	<div><p>标签：</p>
+	<div><p>标签：<i class="video play outline icon"></i></p>
 		<div id="tag">
     <% tag.forEach(function(item,index){ %>
     <% if(item){%>
@@ -42,53 +51,14 @@
 
 	</div>
 	<div class="show">
+
 		<ul></ul>
 		<div></div>
 	</div>
-	<script type="text/javascript">
-    $("#tag").click(function(e){
-    	if($(e.target).className="tag"){
-    		$(e.target).css({"color":"#000","background-color":"#eee"});
-    		$(e.target).siblings().css({"color":"#fff","background-color":"#009C95"});
 
-    	getformusic($(".show ul"),$(e.target).html(),1);
-    }
-    })
-
- function getformusic(elem,language,page){
-    
-         $.ajax({
-                  type: "post",
-                  url: "/getformusicpv",
-                  data: {
-                  tag: language,
-                  page:page
-                  },
-                 async:false,//同步
-                 dataType: "json",
-                  success: function(msg) {
-                    elem.html("");
-                  msg.docs.forEach(function(item,index){
-                    elem.append("<li><a href='javascript:' title='"+item.songname+"' class='ellipsis mname'  data-name='"+item.filename+"'>"+item.songname+"</a><a href='javascript:' title='"+item.singername+"' class='ellipsis msinger'>-"+item.singername+"</a> </li>");
-                  });  
-                   
-                  elem.next().html("");
-                  if(!msg.isFirstPage)
-                  {elem.next().html("<i class='angle left icon' style='float:left' data-page='"+page+"'></i>")}
-                       
-                  
-                  if(!msg.isLastPage){
-                    elem.next().html(elem.next().html()+"<i class='angle right icon' style='float:right' data-page='"+page+"'></i>")
-                  }
-                 },
-                  error: function(err) {
-                      console.log(err);
-                  }
-
-                });
-      }   
-
-	</script>
 
 </body>
+ <script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/javascripts/tags.js"></script>
+
 </html>

@@ -8,17 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
-    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script type="text/javascript" src="/semantic/dist/semantic.min.js"></script>
+   
     <script type="text/javascript">
     var playlist = [];
     var playlisthtml = [];
     var count = 0;
-    function undoa(){
-              
-               $("#main_content iframe").css("display","none"); 
-                       $("#main_content div.info").css("display","block");
-             }
+
     </script>
 </head>
 
@@ -33,7 +28,7 @@
             <div class="item">
                 <div class="ui action left icon input">
                     <i class="search icon"></i>
-                    <input type="text" placeholder="Search">
+                    <input type="text" placeholder="Search" id="input_search">
                     <button class="ui button">Submit</button>
                 </div>
             </div>
@@ -87,10 +82,17 @@
                 <div></div>
             </div>
             <div class="play">
-                <i class="step backward icon"></i><i class="heart icon "></i><i class="step forward icon"></i><i class="download icon"></i>
+            <i class="step backward icon"></i><i class="heart icon "></i><i class="step forward icon"></i>
+            <% if(name){%>
+            <a href="javascript:"   id="download"><i class="download icon"></i></a>
+            <% }else{ %>
+            <i class="download icon"></i>
+            <% } %>
                 <audio src="" controls preload="none">
             </div>
         </div>
 </body>
+ <script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="/semantic/dist/semantic.min.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 </html>
