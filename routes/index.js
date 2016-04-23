@@ -240,7 +240,8 @@ module.exports = function(app) {
             time: time
 
         }
-        var newLove = new Love(req.body.user, love);
+        var username=req.session.username;
+        var newLove = new Love(username, love);
         newLove.save(function(err) {
             if (err) {
                 res.send(false);
@@ -248,6 +249,7 @@ module.exports = function(app) {
             }
             User.get(req.session.username, function(err, user) {
                 if (!user) {
+                    
                     res.send(false);
                     return;
                 }
@@ -259,7 +261,7 @@ module.exports = function(app) {
     });
     app.post('/dellove',checkLogin);
     app.post("/dellove", function(req, res) {
-        Love.remove(req.body.user, req.body.songname, req.body.singername, req.body.filename, function(err, docs) {
+        Love.remove(req.session.username, req.body.songname, req.body.singername, req.body.filename, function(err, docs) {
             if (err) {
                 res.send(false);
                 return;

@@ -28,6 +28,7 @@ Love.prototype.save= function (callback) {
                 return callback(err);
             }
             //将文档插入posts集合
+            
             collection.update({"name":user},{
                 $push:{loves:love}
             }, function (err) {
