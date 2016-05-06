@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+   span{
+   	    padding: 10px;
+    background-color: #009C95;
+    color: #fff;
+    border-radius: 5px;
+    cursor:pointer;
+   }
+   .show{
+     margin-top: 40px;
+     /*border: 1px solid #ccc; */
+           /*border-radius: 5px;*/
+           
+   }
+   .show li{
+   	list-style-position: inside;
+   	list-style-type: none;
+   	line-height: 30px;
+    height: 30px;
+   }
+   i.video.play.outline.icon {
+    font-size: 17px;
+    margin: 0 10px;
+    color: #aaa;
+    cursor: pointer;
+}
+.msinger{
+   
+     color: #ccc;
+}
+	</style>
+	<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
+ 
+</head>
+<body>
+	<div><p>标签：<i class="video play outline icon"></i></p>
+		<div id="tag">
+    <% tag.forEach(function(item,index){ %>
+    <% if(item){%>
+    <span class="tag"><%=item %></span>
+    <% } }) %>
+
+
+		</div>
+
+
+
+	</div>
+	<div class="show">
+
+		<ul></ul>
+		<div></div>
+	</div>
+
+
+</body>
+ <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/javascripts/tags.js"></script>
+
+</html>

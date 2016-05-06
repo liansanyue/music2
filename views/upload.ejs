@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>upload</title>
+</head>
+<body>
+<form method="post" action="/upload" enctype="multipart/form-data" multiple>
+ <label for="songname">歌曲名：</label><input type="text" name="songname" id="songname"/><br/>
+ <label for="singername">歌手名：</label><input type="text" name="singername" id="singername"/><br/>
+ <label >语言：</label><input type="radio" name="language" value="1">华语<input type="radio" name="language" value="2">韩语<input type="radio" name="language" value="3">欧美<br/>
+ <label>标签：</label><input type="text" name="tag1" class="tag"> </label><input type="text" name="tag2" class="tag"> </label><input type="text" name="tag3" class="tag"> <br/>
+<label for="publish">发行时间：</label><input type="text" name="publish" id="publish"><br/>
+<label for="count">热度：</label><input type="text" name="count" id="count"><br/>
+    <label for="count"> 歌曲文件：</label> <input id="m" type="file" name="music"/><br/>
+    <label for="count"> 歌词文件：</label><input id="l" type="file" name="lrc"/><br/>
+     <label for="count"> 图片文件：</label><input id="im" type="file" name="img"/><br/>
+    <!-- <input name="file" type="file" multiple/> -->
+    <input type="submit" value="上传">
+</form>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charsrt="utf-8"/>
+</head>
+<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/music.css">
+ 
+ 
+
+<body>
+<div id="main_body">
+<div id="left_imgplay">
+                <a href="javascript:" id="prev">&lt;</a>
+                <a href="javascript:" id="next">&gt;</a>
+                <img id="playimg" src="/images/0.jpg" />
+                <div class="rangediv">
+                    <a href="javascript:" class="range " style="background-color:#eee" onclick="change(0)"></a>
+                    <a href="javascript:" class="range" onclick="change(1)"></a>
+                    <a href="javascript:" class="range" onclick="change(2)"></a>
+                    <a href="javascript:" class="range" onclick="change(3)"></a>
+                    <a href="javascript:" class="range" onclick="change(4)"></a>
+                    <a href="javascript:" class="range" onclick="change(5)"></a>
+                    <a href="javascript:" class="range" onclick="change(6)"></a>
+                    <a href="javascript:" class="range" onclick="change(7)"></a>
+                </div>
+ </div>
+
+ <div class="musichot">
+     <h3>热歌榜</h3><i class="video play outline icon"></i> <hr/>
+     <ul>
+        <% musicshot.forEach(function(music,index){ %>
+     <li><a href="javascript:" title="<%=music.songname %>" class="ellipsis mname"  data-name="<%=music.filename %>"><%=music.songname %></a>
+     <a href="#" title="<%=music.singername %>" class="ellipsis msinger">-<%=music.singername %></a>
+       <% }) %>           
+    </ul>
+
+ </div>
+  <div class="musicnew">
+    <h3>新歌榜</h3> <i class="video play outline icon"></i><hr/>
+     <ul>
+     <% musicsnew.forEach(function(music,index){ %>
+     <li><a href="javascript:" title="<%=music.songname %>" class="ellipsis mname"  data-name="<%=music.filename %>"><%=music.songname %></a>
+     <a href="#" title="<%=music.singername %>" class="ellipsis msinger">-<%=music.singername %></a>
+       <% }) %>
+  
+     </ul>
+
+ </div>
+ </div>
+</div>
+</body>
+ <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
+  <script type="text/javascript" src="/javascripts/music.js"></script>
+
+</html>
