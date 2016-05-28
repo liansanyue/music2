@@ -1,0 +1,63 @@
+*{
+     padding: 0;margin: 0;
+}
+ @font-face {
+     font-family: Icons;
+     src: url(themes/default/assets/fonts/icons.eot);
+     src: url(themes/default/assets/fonts/icons.eot?#iefix) format('embedded-opentype'), url(themes/default/assets/fonts/icons.woff2) format('woff2'), url(themes/default/assets/fonts/icons.woff) format('woff'), url(themes/default/assets/fonts/icons.ttf) format('truetype'), url(themes/default/assets/fonts/icons.svg#icons) format('svg');
+     font-style: normal;
+     font-weight: 400;
+     font-variant: normal;
+     text-decoration: inherit;
+     text-transform: none
+ }
+ 
+ i.icon {
+     display: inline-block;
+     opacity: 1;
+     margin: 0 .25rem 0 0;
+     width: 1.18em;
+     height: 1em;
+     font-family: Icons;
+     font-style: normal;
+     font-weight: 400;
+     text-decoration: inherit;
+     text-align: center;
+     speak: none;
+     font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     -webkit-font-smoothing: antialiased;
+     -webkit-backface-visibility: hidden;
+     backface-visibility: hidden
+ }
+ 
+ i.icon:before {
+     background: 0 0!important
+ }
+ i.icon.video.play.outline:before {
+    content: "\f01d";
+    font-size: 20px;
+    color: #5B5B5B;
+}
+a {
+    background: 0 0;
+    color: #4183c4;
+        font-size: 15px;
+    text-decoration: none;
+}
+div#tag {
+    margin: 30px;
+}
+span.tag {
+    
+    display: inline-block;
+    margin-bottom: 10px;
+}
+ i.icon.angle.left:before {
+     content: "\f104"
+ }
+ 
+ i.icon.angle.right:before {
+     content: "\f105"
+ }
+ 

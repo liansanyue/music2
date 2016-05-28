@@ -39,7 +39,7 @@
   
  $("#tags div").click(function(e){
     if($(e.target).hasClass("right")){
-
+    
      getformusic(url,$(this).children('ul'),$(this).attr("data-language"),parseInt($(e.target).attr("data-page"))+1);
     }else if($(e.target).hasClass("left")){
 
@@ -64,14 +64,16 @@ var audio=parent.document.querySelector("audio");
 });
  //单个点击-------------------------------------
 
-$(".mname").click(function(){
-    
-    window.parent.playlist.push($(this).attr("data-name"));
-    // window.parent.playlisthtml.push($(this).parent().html());
-    $(list).append("<li data-index="+(window.parent.playlist.length-1)+">"+$(this).parent().html()+"<i class='trash outline icon'></i></li> ")
+$("#tags ul").click(function(e){
+  var that=e.target;
+  
+   if($(that).hasClass("mname")){console.log(that);
+    window.parent.playlist.push($(that).attr("data-name"));
+    // window.parent.playlisthtml.push($(that).parent().html());
+    $(list).append("<li data-index="+(window.parent.playlist.length-1)+">"+$(that).parent().html()+"<i class='trash outline icon'></i></li> ")
     $(list).scrollTop($(list).scrollTop()+30);
     window.parent.count=window.parent.playlist.length-1;
-    musicnum(window.parent.count);
+    musicnum(window.parent.count);}
 });
 //播放函数
 
@@ -79,13 +81,13 @@ $(".mname").click(function(){
            
             $(".playlist a",window.parent.document).attr("style","color:skyblue");
             $(".playlist li:eq("+num+") a",window.parent.document).attr("style","color:#03524F");
-            $(audio).attr("src","/music/"+window.parent.playlist[num]+".mp3"); 
+            $(audio).attr("src","/checked/"+window.parent.playlist[num]+".mp3"); 
               audio.play(); 
               var filename=window.parent.playlist[num];
               if(filename=='undefined'){return;}
                 if($("#user",window.parent.document).text()!=""){
                  var songname=$(".playlist li:eq("+num+") a",window.parent.document).first().attr("title");
-                    $("#download",window.parent.document).attr("href","/music/"+window.parent.playlist[num]+".mp3");
+                    $("#download",window.parent.document).attr("href","/checked/"+window.parent.playlist[num]+".mp3");
                     $("#download",window.parent.document).attr("download",songname+".mp3");}
                     $.ajax({
                           type: "post",

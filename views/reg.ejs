@@ -4,14 +4,15 @@
   <!-- Standard Meta -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="renderer" content="webkit" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>Sign Up</title>
+  <title>注册</title>
    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
  
-  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
+<!-- <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>-->
  
 
   <style type="text/css">
@@ -28,82 +29,14 @@
       max-width: 450px;
     }
   </style>
-  <script>
-  $(document)
-    .ready(function() {
-      $('.ui.form')
-        .form({
-          fields: {
-            name: {
-              identifier  : 'name',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your name'
-                }
-              ]
-            },
-
-            email: {
-              identifier  : 'email',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your e-mail'
-                },
-                {
-                  type   : 'email',
-                  prompt : 'Please enter a valid e-mail'
-                }
-              ]
-            },
-            password: {
-              identifier  : 'password',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your password'
-                },
-                {
-                  type   : 'length[6]',
-                  prompt : 'Your password must be at least 6 characters'
-                }
-              ]
-            },
-             repassword: {
-              identifier  : 'repassword',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your password'
-                },
-                {
-                  type   : 'length[6]',
-                  prompt : 'Your password must be at least 6 characters'
-                }
-              ]
-            }
-          }
-        })
-      ;
-      $(".submit").click(function(){
-        if($("input[name=password]").val()!==$("input[name=repassword]").val())
-        {
-          $(".error").html("Please enter your code,the two codes are not consistent with each other");
-          $(".error").show();
-          return false;
-        }
-      })
-    })
-  ;
-  </script>
+ 
 </head>
 <body>
 
 <div class="ui middle aligned center aligned grid">
   <div class="column">
     
-    <form class="ui large form" action="/reg" method="post">
+    <div class="ui large form" >
       <div class="ui stacked segment">
       <div class="field">
           <div class="ui left icon input">
@@ -134,14 +67,106 @@
 
       <div class="ui error message"></div>
 
-    </form>
+    </div>
 
     <div class="ui message">
-     Existing account? <a href="/login">Sign In</a>
+    已有账号? <a href="/login">登录</a>
     </div>
   </div>
 </div>
+ <script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/semantic/dist/semantic.min.js"></script>
+ <script>
+  $(document)
+    .ready(function() {
+      $('.ui.form')
+        .form({
+          fields: {
+            name: {
+              identifier  : 'name',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : '请输入用户名'
+                }
+              ]
+            },
 
+            email: {
+              identifier  : 'email',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : '请输入邮箱'
+                },
+                {
+                  type   : 'email',
+                  prompt : '邮箱格式不正确'
+                }
+              ]
+            },
+            password: {
+              identifier  : 'password',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : '请输入密码'
+                },
+                {
+                  type   : 'length[6]',
+                  prompt : '密码长度最少为6位'
+                }
+              ]
+            },
+             repassword: {
+              identifier  : 'repassword',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : '请输入密码'
+                },
+                {
+                  type   : 'length[6]',
+                  prompt : '密码长度最少为6位'
+                }
+              ]
+            }
+          }
+        })
+      ;
+      $(".submit").click(function(){
+        if($("input[name=password]").val()!==$("input[name=repassword]").val())
+        {
+          $(".error").html("两次输入密码不一致");
+          $(".error").show();
+          return false;
+        }
+        $.ajax({
+          type:"post",
+          url:"/reg",
+          data:{
+            name:$("input[name=name]").val(),
+            password:$("input[name=password]").val(),
+            repassword:$("input[name=repassword]").val(),
+            email:$("input[name=email]").val()
+          },
+           dataType: "json",
+           success:function(msg){
+             if(msg==false){
+              alert("该用户名已被注册");
+             }else{
+              location.href="/";
+             }
+           },
+           error:function(e){
+
+           }
+
+        });
+      })
+    })
+  ;
+  </script>
 </body>
 
 </html>

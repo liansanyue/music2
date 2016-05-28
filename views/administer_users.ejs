@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+    <title>用户管理</title>
+    <style type="text/css">
+    body,html,div,ul,li{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        /*width: 1000px;*/
+        margin: 0 auto;
+    }
+#aside{
+   /* position: fixed;
+    left:0;*/
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #222222, #111111);
+    margin-bottom: 30px;
+}
+#aside li{
+    float: left;
+    list-style-type: none;
+}
+
+#aside li a{
+    display: block;
+  padding: 0 20px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #ccc;
+   height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+}
+#aside li a:hover{
+    color: #fff;
+}
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: auto;
+  margin-bottom: 20px;
+
+}
+table td {
+  text-align: center;
+  border: 1px solid #ccc; 
+  /*border-radius: 5px;*/
+}
+thead tr{
+     height: 40px;
+     background: #aaa;
+     border: 0;
+}
+thead td{
+     height: 40px;
+     background: #aaa;
+     
+}
+tbody td{
+    
+}
+tbody tr {
+  border-bottom: 1px solid #ccc;
+  height: 40px;
+}
+button{
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    background: #1688C0;
+    color:#fff;
+    border:0;
+
+    border-radius: 5px;
+    outline: 0;
+    transition: all 0.8s ease;
+}
+button:hover{
+background: #1D5672;
+}
+input{
+  display: block;
+  height:30px;
+  width: 100%;
+ /*border: 0;*/
+text-align: center;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+}
+input.loves{
+
+   border: 1px solid #ccc ;
+}
+ol{
+  list-style-position: inside;
+  font-size: 13px;
+  text-align: left;
+  padding: 0;
+  width: 200px;
+}
+button.subupdate{
+  display: none;
+}
+h3{text-align: center;}
+    </style>
+    </style>
+</head>
+<body>
+<div id="aside">
+    <ul>
+        <li><a href="/administer_check" >待审核歌曲</a></li>
+        <li><a href="/administer_musics" >歌曲管理</a></li>
+        <li><a href="/administer_users" style="background:#000;color:#fff">用户管理</a></li>
+          <li><a href="/upload">上传歌曲</a></li>
+        <li><a href="/">返回前台界面</a></li>
+        <li><a href="/logout">注销</a></li>
+
+    </ul>
+
+</div>
+<% if(!usersList.length>0){%>
+    <h3>没有用户</h3>
+<% }else{ %>
+<table border="1">
+<thead>
+         <td>ID</td>
+           <td>用户名</td>
+           <!--  <td>MD5密码</td> -->
+             <td>密码</td>
+            <td>邮箱</td>
+             <td>收藏列表</td>
+             <td>删除</td>
+             <td>修改</td>
+	</thead>
+    <% usersList.forEach(function(user,index){ %>
+     <tr>
+                <td><input class="id" type="text" value="<%= user._id %>" disabled/></td>
+                <% if(user.name=="admin"){%>
+                  <td><input class="name" type="text" value="<%= user.name %>" disabled/></td>
+                <%}else{%>
+                <td><input class="name" type="text" value="<%= user.name %>" disabled/></td>
+                <%}%>
+                <!-- <td><input class="password"   type="text" value="<%= user.password %>" disabled/></td> -->
+                <td><input class="plaintextpw"  type="text" value="<%= user.plaintextpw%>" disabled /></td>
+                <td><input class="email" type="text" value="<%= user.email %> " disabled/></td>
+                <td ><ol><% user.loves.forEach(function(music,index){%>
+                <li><%=music.songname%>-<%=music.singername%></li>
+
+                <%})%>
+
+                 </ol>
+                </td>
+                <td><button class="del">删除</button></td>
+                <td><button class="update">修改</button><button class="subupdate">提交</button></td>
+      </tr>
+       
+     <% })%>
+</table>
+<% }%>
+<script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+<script type="text/javascript">
+$(".update").click(function(){
+  $(this).next().css("display","block");
+  $(this).css("display","none");
+
+   
+   if($(this).parent().parent().find(".name").val().trim()!="admin"){
+     $(this).parent().parent().find(".name").attr("disabled",false);
+   }
+  $(this).parent().parent().find(".plaintextpw").attr("disabled",false);
+  $(this).parent().parent().find(".email").attr("disabled",false);
+});
+$(".subupdate").click(function(){
+
+   var id=$(this).parent().parent().find(".id").val().trim();
+   var name=$(this).parent().parent().find(".name").val().trim();
+   var plaintextpw=$(this).parent().parent().find(".plaintextpw").val().trim();
+   var email=$(this).parent().parent().find(".email").val().trim();
+   if(id.length==0||name.length==0||plaintextpw.length==0||email.length==0){
+    alert("不能为空");
+    return ;
+   }
+   if(plaintextpw.length<6){
+     alert("密码位数不能低于6位");
+    return ;
+   }
+   var that=this;
+   $.ajax({
+                 type: "post",
+                  url: "/userupdate",
+                  data: {
+                    id:id,
+                  name:name,
+                  plaintextpw:plaintextpw,
+                  email:email
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                    alert("修改成功");
+                    location.reload();
+                    /* $(that).prev().css("display","block");
+                     $(that).css("display","none");
+                        
+                             $(that).parent().parent().find(".name").attr("disabled",true);
+                         
+                          $(that).parent().parent().find(".plaintextpw").attr("disabled",true);
+                          $(that).parent().parent().find(".email").attr("disabled",true);*/
+                   },
+                    error:function(err){
+                    alert("修改失败");
+                     $(that).prev().css("display","block");
+                     $(that).css("display","none");
+                      
+                             $(that).parent().parent().find(".name").attr("disabled",true);
+                     
+                          $(that).parent().parent().find(".plaintextpw").attr("disabled",true);
+                          $(that).parent().parent().find(".email").attr("disabled",true);
+                    }
+
+
+
+   })
+});
+$(".del").click(function(){
+  var id=$(this).parent().parent().find(".id").val().trim();
+   
+   var that=this;
+   if(confirm("确定删除？")){
+   $.ajax({
+
+                 type: "post",
+                  url: "/deluser",
+                  data: {
+                  id:id,
+                 
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                  alert("删除成功");   location.reload();
+                /*  $(that).parent().parent().remove();
+                   if($("tbody tr").length==0){
+                    $("table").remove();
+                    $("body").append(" <h3>没有用户</h3>");
+                     }*/
+                   },
+                    error:function(err){
+                     alert("删除失败")
+                    }
+
+    
+   })}
+});
+
+  </script>
+</body>
+</html>

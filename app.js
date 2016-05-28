@@ -35,7 +35,7 @@ app.use(session({
   })
 }))
 app.use(multer({
-  dest:'./public/music',
+  dest:'./public/nocheck',
   rename: function (fieldname,filename) {
      var md5 = crypto.createHash('md5'),
             filename = md5.update(filename).digest('hex');
@@ -46,7 +46,7 @@ app.use(multer({
 routes(app);
 app.use('/users', users);//路由控制器
 
-// catch 404 and forward to error handler
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;

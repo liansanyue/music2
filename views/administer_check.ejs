@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+	<title>审核管理</title>
+    <style type="text/css">
+    body,html,div,ul,li{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        /*width: 1000px;*/
+        margin: 0 auto;
+    }
+#aside{
+   /* position: fixed;
+    left:0;*/
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #222222, #111111);
+    margin-bottom: 30px;
+}
+#aside li{
+    float: left;
+    list-style-type: none;
+}
+
+#aside li a{
+    display: block;
+  padding: 0 20px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #ccc;
+   height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+}
+#aside li a:hover{
+    color: #fff;
+}
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: auto;
+  margin-bottom: 20px;
+
+}
+table td {
+  text-align: center;
+  border: 1px solid #ccc; 
+  /*border-radius: 5px;*/
+}
+thead tr{
+     height: 40px;
+     background: #aaa;
+     border: 0;
+}
+thead td{
+     height: 40px;
+     background: #aaa;
+     
+}
+tbody td{
+     padding:5px;
+}
+tbody tr {
+  border-bottom: 1px solid #ccc;
+  height: 40px;
+}
+button{
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    background: #1688C0;
+    color:#fff;
+    border:0;
+
+    border-radius: 5px;
+    outline: 0;
+    transition: all 0.8s ease;
+}
+button:hover{
+background: #1D5672;
+}
+
+h3{text-align: center;}
+    </style>
+
+
+</head>
+<body>
+<div id="aside">
+    <ul>
+        <li><a href="/administer_check" style="background:#000;color:#fff">待审核歌曲</a></li>
+        <li><a href="/administer_musics">歌曲管理</a></li>
+        <li><a href="/administer_users">用户管理</a></li>
+         <li><a href="/upload">上传歌曲</a></li>
+        <li><a href="/">返回前台界面</a></li>
+        <li><a href="/logout">注销</a></li>
+
+    </ul>
+
+</div>
+<% if(!musicsList.length>0){%>
+    <h3>没有待审核的歌曲</h3>
+<% }else{ %>
+<audio src="javascript:"></audio>
+<table border="1">
+<thead>
+           <td>播放</td>
+           <td>ID</td>
+           <td>歌曲名</td>
+           <td>歌手名</td>            
+           <td>文件名</td>
+           <td>播放次数</td>
+           <td>上传时间</td>
+         <td>语言</td>
+         <td>标签</td>
+         <td>通过审核</td>
+         <td>删除</td>
+            
+	</thead>
+    <tbody>
+    <% musicsList.forEach(function(music,index){ %>
+    <tr>        <td><button class="play" style="width:30px">▷</button></td>
+                <td class="song_id"> <%= music._id %></td>
+                <td> <%= music.songname %></td>
+                <td> <%= music.singername %></td>
+                <td class="songfile"><%= music.filename %></td>
+                <td> <%= music.pv %></td>
+                <td> <%= music.time.date %></td>
+                <td> <%= music.tag[0] %></td>
+                <td>  <%= music.tag[1] %>, <%= music.tag[2] %>, <%= music.tag[3] %></td>
+                <td><button class="check">审核通过</button></td>
+                <td><button class="del">删除</button></td>
+      </tr>
+       
+     <% })%>
+     </tbody>
+</table>
+<% }%>
+<script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+<script type="text/javascript">
+
+$(".check").click(function(){
+   var _id=$(this).parent().parent().children(".song_id").text().trim();
+   var filename=$(this).parent().parent().children(".songfile").text().trim();
+var that=this;
+   $.ajax({
+                 type: "post",
+                  url: "/check",
+                  data: {
+                  _id:_id,
+                  filename:filename
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                   console.log(msg);
+                 $(that).parent().parent().remove();
+                if($("tbody tr").length==0){
+                    $("table").remove();
+                    $("body").append(" <h3>没有待审核的歌曲</h3>");
+                     }
+                   },
+                    error:function(err){
+                    console.log(err)
+                    }
+
+
+
+   })
+});
+
+$(".del").click(function(){
+  var _id=$(this).parent().parent().children(".song_id").text().trim();
+   var filename=$(this).parent().parent().children(".songfile").text().trim();
+   var that=this;
+   if(confirm("确定删除？")){
+   $.ajax({
+
+                 type: "post",
+                  url: "/del",
+                  data: {
+                  _id:_id,
+                  filename:filename,
+                    path:"checked"
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                   console.log(msg);
+                  $(that).parent().parent().remove();
+                if($("tbody tr").length==0){
+                    $("table").remove();
+                    $("body").append(" <h3>没有待审核的歌曲</h3>");
+                     }
+                   },
+                    error:function(err){
+                    console.log(err)
+                    }
+
+    
+   })}
+});
+var audioStatus = "stoped";
+$(".play").click(function(){
+    if(audioStatus =="stoped"){
+  var songfile=$(this).parent().parent().children(".songfile").text();
+  $("audio").attr("src","/nocheck/"+(songfile.trim())+".mp3");
+  $("audio")[0].play();
+ audioStatus = "palyed";
+  $(this).html("■");}else{
+    $("audio")[0].pause();
+    audioStatus = "stoped";
+     $(".play").html("▷");
+  }
+});
+</script>
+</body>
+</html>

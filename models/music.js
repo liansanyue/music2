@@ -1,10 +1,11 @@
 var mongodb=require('../models/db');
-function Music(user,songname,singername,tag,publish,filename){
+var mongo = require('mongodb');
+function Music(user,songname,singername,tag,filename){
 	this.user=user;
     this.songname=songname;
     this.singername=singername;
     this.tag=tag;
-    this.publish=publish;
+   
     this.filename=filename;
      
 }
@@ -28,11 +29,11 @@ Music.prototype.save= function (callback) {
         time:time,
         singername:this.singername,
         tag:this.tag,
-        publish:this.publish,
         filename:this.filename,
         comments:[],//评论
         pv:0,
-        info:this.songname+" "+this.singername+" "+this.tag.toString()
+        info:this.songname+" "+this.singername+" "+this.tag.toString(),
+        ischeck:false
 
 
     };
@@ -76,7 +77,8 @@ Music.getTenNew=function(name,page,callback){
             var query={};
             if(name){
                 query.name=name;
-            }
+             
+            }   query.ischeck=true;
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -110,7 +112,8 @@ Music.getTenHot=function(name,page,callback){
             var query={};
             if(name){
                 query.name=name;
-            }
+                
+            }  query.ischeck=true;
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -164,7 +167,7 @@ Music.getTags=function(callback){
             }
 
 //distinct用来给出给定键的所有不同值
-            collection.distinct("tag",function(err,docs){
+            collection.distinct("tag",{"ischeck":true},function(err,docs){
                 mongodb.close();
                 if(err){
                     return callback(err);
@@ -192,7 +195,8 @@ Music.getTag=function(tag,sort,callback){
             var query={};
             if(tag){
                 query.tag=tag;
-            }
+                 
+            } query.ischeck=true;
             collection.count(query,function(err,total){
                 collection.find(query,{
                     "songname":1,
@@ -226,7 +230,8 @@ Music.getformusicpv=function(tag,page,callback){
             var query={};
             if(tag){
                 query.tag=tag;
-            }
+                 
+            } query.ischeck=true;
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -260,7 +265,8 @@ Music.getformusictime=function(tag,page,callback){
             var query={};
             if(tag){
                 query.tag=tag;
-            }
+
+            } query.ischeck=true;
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -292,7 +298,7 @@ Music.search=function(keyword,callback){
             }
 
             var pattern=new RegExp(keyword,"i");
-            collection.find({"info":pattern},{
+            collection.find({"info":pattern,"ischeck":true},{
                 "songname":1,
                 "singername":1,
                 "filename":1,
@@ -307,3 +313,148 @@ Music.search=function(keyword,callback){
         })
     })
 }
+Music.getAllMusics=function(callback){
+    //打开数据库
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        //读取posts集合
+        db.collection('musics', function (err,collection) {
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+          
+         
+              collection.find({"ischeck":true}).sort({time:-1}).toArray(function(err,docs){
+                  mongodb.close();
+                  if(err){
+                      return callback(err);
+                  }
+
+                  callback(null,docs);
+              });
+      
+
+
+        });
+    });
+};
+Music.getnoCheck=function(callback){
+    //打开数据库
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        //读取posts集合
+        db.collection('musics', function (err,collection) {
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+          
+         
+              collection.find({"ischeck":false}).sort({time:-1}).toArray(function(err,docs){
+                  mongodb.close();
+                  if(err){
+                      return callback(err);
+                  }
+
+                  callback(null,docs);
+              });
+      
+
+
+        });
+    });
+};
+
+
+Music.check=function(id,callback){
+ mongodb.open(function (err,db){
+        if(err){
+            return callback(err);
+        }
+      
+        db.collection('musics',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+ 
+          var o_id = new mongo.ObjectID(id);
+          
+            collection.update({"_id":o_id},{
+                $set:{ischeck:true}
+            }, function (err) {
+                mongodb.close();
+                if(err){
+                    callback(err);
+                }
+                callback(null);
+
+            });
+        });
+    });
+}
+
+Music.del=function(id,callback){
+ mongodb.open(function (err,db){
+        if(err){
+            return callback(err);
+        }
+      
+        db.collection('musics',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+ 
+          var o_id = new mongo.ObjectID(id);
+          console.log(o_id);
+            collection.remove({"_id":o_id},{
+               w:1
+            }, function (err) {
+                mongodb.close();
+                if(err){
+                    callback(err);
+                }
+                callback(null);
+
+            });
+        });
+    });
+}
+ Music.musicupdate=function(id,songname,singername,pv,language,tags1,tags2,tags3,callback){
+  mongodb.open(function (err,db){
+        if(err){
+            return callback(err);
+        }
+      
+        db.collection('musics',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+ 
+          var o_id = new mongo.ObjectID(id);
+          var tag=[];
+          tag[0]=language,tag[1]=tags1,tag[2]=tags2,tag[3]=tags3;
+          var info=songname+" "+singername+" "+tag.toString();
+          console.log(o_id);
+            collection.update({"_id":o_id},{
+                $set:{songname:songname,singername:singername,pv:pv,tag:tag,info:info}
+            }, function (err) {
+                mongodb.close();
+                if(err){
+                    callback(err);
+                }
+                callback(null);
+
+            });
+        });
+    });
+
+
+ }

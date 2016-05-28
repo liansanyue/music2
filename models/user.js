@@ -1,9 +1,10 @@
 var mongodb=require('../models/db');
+var mongo = require('mongodb');
 function User(user){
     this.name=user.name;
     this.password=user.password;
     this.email=user.email;
-    this.ip=user.ip
+    this.plaintextpw=user.plaintextpw
 }
 module.exports=User;
 //存储用户信息
@@ -13,7 +14,7 @@ User.prototype.save=function(callback){
         name:this.name,
         password:this.password,
         email:this.email,
-        ip:this.ip,
+        plaintextpw:this.plaintextpw,
         loves:[]
     };
 
@@ -28,7 +29,7 @@ User.prototype.save=function(callback){
                 return callback(err);//错误，返回err信息
             }
             //将用户数据插入users集合
-            collection.insert(user,{safe:true},function(err,user){
+            collection.insert(user,{safe:true},function(err,user1){
                 mongodb.close();
                 if(err){
                     return callback(err);//错误，返回err信息
@@ -122,3 +123,85 @@ User.getAll=function(name,callback){
         });
     });
 };
+User.getAllUsers=function(callback){
+    //打开数据库
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        //读取posts集合
+        db.collection('users', function (err,collection) {
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+           
+            collection.find().sort({time:-1}).toArray(function(err,docs){
+                mongodb.close();
+                if(err){
+                    return callback(err);
+                }
+
+
+                callback(null,docs);
+            });
+
+        });
+    });
+};
+ User.userupdate=function(id,name,password,plaintextpw,email,callback){
+
+  mongodb.open(function (err,db){
+        if(err){
+            return callback(err);
+        }
+      
+        db.collection('users',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+ 
+          var o_id = new mongo.ObjectID(id);
+            collection.update({"_id":o_id},{
+                $set:{name:name,password:password,plaintextpw,email:email}
+            }, function (err) {
+                mongodb.close();
+                if(err){
+                    callback(err);
+                }
+                callback(null);
+
+            });
+        });
+    });
+ }
+  User.deluser=function(id,callback){
+ mongodb.open(function (err,db){
+        if(err){
+            return callback(err);
+        }
+      
+        db.collection('users',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+ 
+          var o_id = new mongo.ObjectID(id);
+          console.log(o_id);
+            collection.remove({"_id":o_id},{
+               w:1
+            }, function (err) {
+                mongodb.close();
+                if(err){
+                    callback(err);
+                }
+                callback(null);
+
+            });
+        });
+    });
+
+
+  }

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+    <title>歌曲管理</title>
+    <style type="text/css">
+    body,html,div,ul,li{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        /*width: 1000px;*/
+        margin: 0 auto;
+    }
+#aside{
+   /* position: fixed;
+    left:0;*/
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, #222222, #111111);
+    margin-bottom: 30px;
+}
+#aside li{
+    float: left;
+    list-style-type: none;
+}
+
+#aside li a{
+    display: block;
+  padding: 0 20px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #ccc;
+   height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+}
+#aside li a:hover{
+    color: #fff;
+}
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: auto;
+  margin-bottom: 20px;
+
+}
+table td {
+  text-align: center;
+  border: 1px solid #ccc; 
+  /*border-radius: 5px;*/
+}
+thead tr{
+     height: 40px;
+     background: #aaa;
+     border: 0;
+}
+thead td{
+     height: 40px;
+     background: #aaa;
+     
+}
+tbody td{
+     padding:5px;
+}
+tbody tr {
+  border-bottom: 1px solid #ccc;
+  height: 40px;
+}
+button{
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    background: #1688C0;
+    color:#fff;
+    border:0;
+
+    border-radius: 5px;
+    outline: 0;
+    transition: all 0.8s ease;
+}
+button:hover{
+background: #1D5672;
+}
+input{
+  display: block;
+  height:30px;
+  width: 100%;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+text-align: center;
+}
+input.pv{
+  width: 30px;
+}
+.tag input{
+  width: 50px;
+
+}
+button.subupdate{
+  display: none;
+}
+h3{text-align: center;}
+    </style>
+</head>
+<body>
+<div id="aside">
+    <ul>
+        <li><a href="/administer_check" >待审核歌曲</a></li>
+        <li><a href="/administer_musics" style="background:#000;color:#fff">歌曲管理</a></li>
+        <li><a href="/administer_users">用户管理</a></li>
+          <li><a href="/upload">上传歌曲</a></li>
+        <li><a href="/">返回前台界面</a></li>
+        <li><a href="/logout">注销</a></li>
+
+    </ul>
+
+</div>
+<% if(!musicsList.length>0){%>
+    <h3>没有歌曲</h3>
+<% }else{ %>
+<audio src="javascript:"></audio>
+<table border="1">
+<thead>
+          <td>播放</td>
+           <td>ID</td>
+           <td>歌曲名</td>
+            <td>歌手名</td>
+            
+             <td>文件名</td>
+             <td>播放次数</td>
+             <td>上传时间</td>
+             <td>语言</td>
+             <td>标签</td>
+             <td>上传人员</td>
+             <td>删除</td>
+                <td>修改</td>
+	</thead>
+    <tbody>
+    <% musicsList.forEach(function(music,index){ %>
+     <tr>
+                 <td><button class="play" style="width:30px">▷</button></td>
+                <td ><input class="id" type="text" value="<%= music._id %>" disabled /></td>
+                <td ><input class="songname" type="text" value="<%= music.songname %>" disabled/></td>
+                <td><input  class="singername" type="text" value="<%= music.singername %>" disabled/></td>
+                <td><input  class="songfile" type="text" value="<%= music.filename %>" disabled /></td>
+                <td><input  class="pv" type="text" value="<%= music.pv %>" disabled /></td>
+                <td><input  class="date" type="text" value="<%= music.time.date %>" disabled /></td>
+                <td><input  class="language" type="text" value="<%= music.tag[0] %>" disabled/></td>
+                <td class="tag"><input class="tags1" type="text" value="<%= music.tag[1] %>" disabled/><input class="tags2" type="text" value="<%= music.tag[2] %>" disabled/><input class="tags3" type="text" value="<%= music.tag[3]%>" disabled/></td>
+                  <td class="user">  <%= music.user %></td>
+               
+                <td><button class="del">删除</button></td>
+                <td><button class="update">修改</button><button class="subupdate">提交</button></td>
+      </tr>
+       
+     <% })%></tbody>
+</table>
+<% }%>
+<script type="text/javascript" src="/javascripts/jquery-2.2.3.min.js"></script>
+<script type="text/javascript">
+$(".update").click(function(){
+  $(this).next().css("display","block");
+  $(this).css("display","none");
+
+   
+    
+     $(this).parent().parent().find(".songname").attr("disabled",false);  
+  $(this).parent().parent().find(".singername").attr("disabled",false);
+  $(this).parent().parent().find(".pv").attr("disabled",false);
+  $(this).parent().parent().find(".language").attr("disabled",false);
+  $(this).parent().parent().find(".tags1").attr("disabled",false);
+  $(this).parent().parent().find(".tags2").attr("disabled",false);
+  $(this).parent().parent().find(".tags3").attr("disabled",false);
+});
+$(".subupdate").click(function(){
+
+  var id=$(this).parent().parent().find(".id").val().trim();  
+  var songname=$(this).parent().parent().find(".songname").val().trim();  
+  var singername=$(this).parent().parent().find(".singername").val().trim();
+  var pv=$(this).parent().parent().find(".pv").val().trim();
+  var language=$(this).parent().parent().find(".language").val().trim();
+  var tags1=$(this).parent().parent().find(".tags1").val().trim();
+  var tags2=$(this).parent().parent().find(".tags2").val().trim();
+  var tags3=$(this).parent().parent().find(".tags3").val().trim();
+   if(songname.length==0||singername.length==0||pv.length==0||language.length==0||language.length==0){
+    alert("不能为空");
+    return ;
+   }
+   var that=this;
+   $.ajax({
+                 type: "post",
+                  url: "/musicupdate",
+                  data: {
+                    id:id,
+                  songname:songname,
+                  singername:singername,
+                  pv:pv,
+                  language:language,
+                  tags1:tags1,
+                  tags2:tags2,
+                  tags3:tags3
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                    alert("修改成功");
+                    location.reload();
+                  
+                   
+                   },
+                    error:function(err){
+                    alert("修改失败");
+                  
+                       location.reload();
+                    }
+
+
+
+   })
+});
+$(".del").click(function(){
+  
+  var _id=$(this).parent().parent().find(".id").val().trim();
+   var filename=$(this).parent().parent().find(".songfile").val().trim();
+   var that=this;
+   if(confirm("确定删除？")){
+   $.ajax({
+
+                 type: "post",
+                  url: "/del",
+                  data: {
+                  _id:_id,
+                  filename:filename,
+                  path:"checked"
+                  },
+                 dataType: "json",
+                  success: function(msg) {
+                 
+                   console.log(msg);
+                  $(that).parent().parent().remove();
+                if($("tbody tr").length==0){
+                    $("table").remove();
+                    $("body").append(" <h3>没有歌曲</h3>");
+                     }
+                   },
+                    error:function(err){
+                    console.log(err)
+                    }
+
+    
+   })}
+});
+var audioStatus = "stoped";
+$(".play").click(function(){
+    if(audioStatus =="stoped"){
+  var songfile=$(this).parent().parent().find(".songfile").val();
+  $("audio").attr("src","/checked/"+(songfile.trim())+".mp3");
+  $("audio")[0].play();
+ audioStatus = "palyed";
+  $(this).html("■");}else{
+    $("audio")[0].pause();
+    audioStatus = "stoped";
+     $(".play").html("▷");
+  }
+});
+  </script>
+</body>
+</html>
