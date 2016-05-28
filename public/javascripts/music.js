@@ -109,13 +109,17 @@ $(".mname").click(function(){
            
             $(".playlist a",window.parent.document).attr("style","color:skyblue");
             $(".playlist li:eq("+num+") a",window.parent.document).attr("style","color:#03524F");
+
             $(audio).attr("src","/checked/"+window.parent.playlist[num]+".mp3"); 
+
               audio.play(); 
               var filename=window.parent.playlist[num];
               if(filename=='undefined'){return;}
               if($("#user",window.parent.document).text()!=""){
                  var songname=$(".playlist li:eq("+num+") a",window.parent.document).first().attr("title");
+
                     $("#download",window.parent.document).attr("href","/checked/"+window.parent.playlist[num]+".mp3");
+
                     $("#download",window.parent.document).attr("download",songname+".mp3");}
                     $.ajax({
                           type: "post",
@@ -124,10 +128,12 @@ $(".mname").click(function(){
                           filename: filename,
                           
                           },
+
                         // async:false,//同步
                         dataType: "text",
                           success: function(msg) {
                             console.log(msg);
+
                             showlrc(msg);
                            
 

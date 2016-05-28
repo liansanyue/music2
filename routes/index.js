@@ -24,7 +24,7 @@ module.exports = function(app) {
     });
     app.get('/login',checkNotLogin);
     app.get('/login', function(req, res) {
-      
+
         res.render('login');
 
     });
@@ -41,6 +41,7 @@ module.exports = function(app) {
         });
         User.get(newUser.name, function(err, user) {
             if (!user) {
+
                 // req.flash('error', '用户不存在');
                 // return res.redirect('/login')
                 res.send("1");
@@ -53,10 +54,12 @@ module.exports = function(app) {
                 return ;
             }
 
+
             req.session.username = newUser.name;
             req.session.user = user;
             req.flash('success', '登陆成功');
             console.log("登录成功");
+
              if(newUser.name=="admin"){
                 // res.redirect('/administer_check');
                 res.send("4");
@@ -66,6 +69,7 @@ module.exports = function(app) {
             res.send("3");
                 return ;
            }
+
         })
 
     });
@@ -90,6 +94,7 @@ module.exports = function(app) {
         //检验用户两次输入的密码是否一致
 
         if (password_re != password) {
+
             // req.flash('error', '两次输入的密码不一致');
             // return res.redirect('/res'); //返回注册页
             res.send(false);
@@ -97,12 +102,14 @@ module.exports = function(app) {
         }
         //生成密码的MD5值
   
+
         var md5 = crypto.createHash('md5'),
             password = md5.update(req.body.password).digest('hex');
         var newUser = new User({
             name: req.body.name.trim() == "" ? req.body.email : req.body.name.trim(),
             password: password,
             email: req.body.email,
+
             plaintextpw:req.body.password
           
         });
@@ -110,16 +117,19 @@ module.exports = function(app) {
   
 
             User.get(newUser.name, function(err, user2) {
+
                 if (err) {
                     req.flash('error', err);
                     return res.redirect('/')
                 }
+
                 if (user2) {
 
                     // req.flash('error', '用户已经存在')
                     // return res.redirect('/reg'); //返回注册页
                      res.send(false);
                      return ;
+
                 }
 
                 //如果不存在则新增用户
@@ -128,6 +138,7 @@ module.exports = function(app) {
                         req.flash('error', err);
                         return res.redirect('/reg'); //注册失败返回注册
                     }
+
 
                     req.session.username = newUser.name;
                     req.session.user = user;
@@ -146,6 +157,7 @@ module.exports = function(app) {
                 name: req.session.username});
        
 
+
     });
     app.post('/upload',checkLogin);
     app.post('/upload', function(req, res) {
@@ -158,7 +170,9 @@ module.exports = function(app) {
         if(req.body.language=="2")language="日韩";
         if(req.body.language=="3")language="欧美";
         var tags = [language, req.body.tag1, req.body.tag2, req.body.tag3];
+
         var music = new Music(req.session.username, req.body.songname, req.body.singername, tags, filename);
+
         music.save(function(err) {
             if (err) {
                 req.flash('error', err);
@@ -252,8 +266,10 @@ module.exports = function(app) {
             time: time
 
         }
+
       
         var newLove = new Love(req.session.username, love);
+
         newLove.save(function(err) {
             if (err) {
                 res.send(false);
@@ -261,6 +277,7 @@ module.exports = function(app) {
             }
             User.get(req.session.username, function(err, user) {
                 if (!user) {
+
                     res.send(false);
                     return;
                 }
@@ -291,6 +308,7 @@ module.exports = function(app) {
         })
     })
     app.post("/getlrc", function(req, res) {
+
           Music.browse(req.body.filename, function(err) {
                             if (err) {return;}
                              
@@ -304,10 +322,12 @@ module.exports = function(app) {
                 return;
               } else {
                fs.readFile('./public/checked/' + req.body.filename + ".lrc", 'utf-8', function(err, data) {
+
                     //读取文件
                     if (err) {
                         res.send("");
                         return;
+
                     }else{
                      
                         res.send(data); return;
@@ -320,6 +340,7 @@ module.exports = function(app) {
               })
             });
           
+
 
     app.post("/getformusicpv", function(req, res) {
         Music.getformusicpv(req.body.tag, req.body.page, function(err, docs, total) {
@@ -363,6 +384,7 @@ module.exports = function(app) {
                 res.send(docs);
             }        })
     });
+
  app.get('/administer_users',checkIsAdmin);
 app.get('/administer_users', function(req, res) {
     if(req.session.user&&req.session.user.name=="admin"){
@@ -501,12 +523,12 @@ app.get('/administer_check', function(req, res) {
       })
  })
 
+
     app.use(function(req,res){      
       
        res.render("404")
     ;})
 
-  
 };
 function checkLogin(req,res,next){
   if(!req.session.user){
@@ -521,6 +543,7 @@ function checkNotLogin(req,res,next){
     res.redirect('/');
   }
   next();
+
 }
 function checkIsAdmin(req,res,next){
     console.log(req.session.user.name);
@@ -571,4 +594,5 @@ function removefile(filename,path){
             console.log(err);                             
              return;                  }             
     });    
+
 }

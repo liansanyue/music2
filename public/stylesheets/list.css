@@ -1,7 +1,9 @@
  *{margin: 0;
   padding: 0}
 div#tags>div {
+
     width: 208px;
+
     padding: 10px 0px 0px 20px;
     display: inline-block;
     height: 400px;

@@ -82,7 +82,9 @@
                }
                 $(".playlist a").attr("style","color:skyblue");
                 $(".playlist li:eq("+num+") a").attr("style","color:#03524F");
+
                 $("audio").attr("src","/checked/"+playlist[num]+".mp3"); 
+
                   $("audio")[0].play(); 
                   var filename=playlist[num];
                    var songname=$(".playlist li:eq("+num+") a").first().attr("title");
@@ -90,7 +92,9 @@
                   if(filename==undefined||playlist.length==0){return ;}
                   else{ 
                      if($("#user").text()!=""){
+
                     $("#download").attr("href","/checked/"+playlist[num]+".mp3");
+
                     $("#download").attr("download",songname+".mp3");}
                         $.ajax({
                               type: "post",
@@ -99,7 +103,9 @@
                               filename: filename,
                               
                               },
+
                             // async:false,//同步
+
                             dataType: "text",
                               success: function(msg) {
                                 showlrc(msg);
@@ -156,16 +162,20 @@
                       var filename=tar.attr("data-name");
                       var singername=tar.next().attr("title"); 
                       var user=$("#user").text();
+
                        console.log(songname);
+
                         if(user.trim()=="")
                             {
                               alert("请先登录！")
                               return;
                             }
+
                             if(songname==undefined){
                               alert("当前没有歌曲可以收藏");
                               return ;
                             }
+
                      $.ajax({
                               type: "post",
                               url: "/addlove",

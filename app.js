@@ -35,7 +35,9 @@ app.use(session({
   })
 }))
 app.use(multer({
+
   dest:'./public/nocheck',
+
   rename: function (fieldname,filename) {
      var md5 = crypto.createHash('md5'),
             filename = md5.update(filename).digest('hex');
@@ -45,6 +47,8 @@ app.use(multer({
 //app.use('/', routes);//路由控制器
 routes(app);
 app.use('/users', users);//路由控制器
+
+
 
 
 app.use(function(req, res, next) {

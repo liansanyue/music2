@@ -1,11 +1,13 @@
 var mongodb=require('../models/db');
+
 var mongo = require('mongodb');
 function Music(user,songname,singername,tag,filename){
+
 	this.user=user;
     this.songname=songname;
     this.singername=singername;
     this.tag=tag;
-   
+
     this.filename=filename;
      
 }
@@ -29,11 +31,13 @@ Music.prototype.save= function (callback) {
         time:time,
         singername:this.singername,
         tag:this.tag,
+
         filename:this.filename,
         comments:[],//评论
         pv:0,
         info:this.songname+" "+this.singername+" "+this.tag.toString(),
         ischeck:false
+
 
 
     };
@@ -77,8 +81,10 @@ Music.getTenNew=function(name,page,callback){
             var query={};
             if(name){
                 query.name=name;
+
              
             }   query.ischeck=true;
+
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -112,8 +118,10 @@ Music.getTenHot=function(name,page,callback){
             var query={};
             if(name){
                 query.name=name;
+
                 
             }  query.ischeck=true;
+
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -167,7 +175,9 @@ Music.getTags=function(callback){
             }
 
 //distinct用来给出给定键的所有不同值
+
             collection.distinct("tag",{"ischeck":true},function(err,docs){
+
                 mongodb.close();
                 if(err){
                     return callback(err);
@@ -195,8 +205,10 @@ Music.getTag=function(tag,sort,callback){
             var query={};
             if(tag){
                 query.tag=tag;
+
                  
             } query.ischeck=true;
+
             collection.count(query,function(err,total){
                 collection.find(query,{
                     "songname":1,
@@ -230,8 +242,10 @@ Music.getformusicpv=function(tag,page,callback){
             var query={};
             if(tag){
                 query.tag=tag;
+
                  
             } query.ischeck=true;
+
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -266,7 +280,9 @@ Music.getformusictime=function(tag,page,callback){
             if(tag){
                 query.tag=tag;
 
+
             } query.ischeck=true;
+
           collection.count(query,function(err,total){
               collection.find(query,{
                   skip:(page-1)*10,//跳过指定数量的数据
@@ -298,7 +314,9 @@ Music.search=function(keyword,callback){
             }
 
             var pattern=new RegExp(keyword,"i");
+
             collection.find({"info":pattern,"ischeck":true},{
+
                 "songname":1,
                 "singername":1,
                 "filename":1,
@@ -312,6 +330,7 @@ Music.search=function(keyword,callback){
             })
         })
     })
+
 }
 Music.getAllMusics=function(callback){
     //打开数据库
@@ -458,3 +477,4 @@ Music.del=function(id,callback){
 
 
  }
+

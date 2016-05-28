@@ -1,10 +1,14 @@
 var mongodb=require('../models/db');
+
 var mongo = require('mongodb');
+
 function User(user){
     this.name=user.name;
     this.password=user.password;
     this.email=user.email;
+
     this.plaintextpw=user.plaintextpw
+
 }
 module.exports=User;
 //存储用户信息
@@ -14,7 +18,9 @@ User.prototype.save=function(callback){
         name:this.name,
         password:this.password,
         email:this.email,
+
         plaintextpw:this.plaintextpw,
+
         loves:[]
     };
 
@@ -29,7 +35,9 @@ User.prototype.save=function(callback){
                 return callback(err);//错误，返回err信息
             }
             //将用户数据插入users集合
+
             collection.insert(user,{safe:true},function(err,user1){
+
                 mongodb.close();
                 if(err){
                     return callback(err);//错误，返回err信息
@@ -122,6 +130,7 @@ User.getAll=function(name,callback){
 
         });
     });
+
 };
 User.getAllUsers=function(callback){
     //打开数据库
